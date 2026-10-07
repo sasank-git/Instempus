@@ -49,7 +49,7 @@ export function GuardScannerScreen() {
   };
 
   const handleAction = (actionType: 'exit' | 'entry') => {
-    if (!scannedPass || !scannedPass.qrToken) return;
+    if (!scannedPass) return;
     const result = verifyGuardScan(scannedPass.qrToken, actionType);
     if (result.success && result.pass) {
       setScannedPass(result.pass);
@@ -128,22 +128,22 @@ export function GuardScannerScreen() {
         </span>
 
         <div className="grid grid-cols-2 gap-2">
-          {demoActivePass && demoActivePass.qrToken ? (
+          {demoActivePass ? (
             <button
-              onClick={() => demoActivePass.qrToken && handleSimulateScan(demoActivePass.qrToken)}
+              onClick={() => handleSimulateScan(demoActivePass.qrToken)}
               className="p-3 rounded-2xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/50 text-left transition-all active:scale-95"
             >
               <div className="flex items-center gap-1.5 text-indigo-300 font-bold text-xs">
                 <Sparkles size={14} />
-                <span>Scan Student Pass</span>
+                <span>Scan Arya's Pass</span>
               </div>
               <p className="text-[10px] text-slate-400 mt-0.5 truncate">
                 {demoActivePass.id} • {demoActivePass.studentName}
               </p>
             </button>
           ) : (
-            <div className="p-3 rounded-2xl bg-[#141414] border border-white/5 text-slate-500 text-xs flex items-center justify-center text-center">
-              No Approved Pass in Queue
+            <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-left flex flex-col justify-center">
+              <span className="text-[10px] text-slate-500 font-mono">No passes available</span>
             </div>
           )}
 

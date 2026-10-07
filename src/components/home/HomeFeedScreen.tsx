@@ -8,7 +8,7 @@ import {
   Plus,
   ArrowRight,
   AlertTriangle,
-  Sparkles,
+  GraduationCap,
 } from 'lucide-react';
 import { CreateNoticeScene } from './CreateNoticeScene';
 import { CanteenMenuCard } from '../canteen/CanteenMenuCard';
@@ -23,6 +23,7 @@ export function HomeFeedScreen() {
     isCreateSceneOpen,
     setCreateSceneOpen,
     triggerEmergencyAlert,
+    setActiveTab,
   } = useAppStore();
 
   const [selectedTag, setSelectedTag] = useState<string>('all');
@@ -44,8 +45,8 @@ export function HomeFeedScreen() {
     const diffX = touchEndX - touchStartX.current;
     const diffY = touchEndY - touchStartY.current;
 
-    // SWIPE RIGHT (like Instagram camera from Home Feed)
-    if (diffX > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+    // Only trigger if horizontal swipe is deliberate and significantly exceeds vertical scroll
+    if (diffX < -70 && Math.abs(diffX) > Math.abs(diffY) * 1.8) {
       setCreateSceneOpen(true);
     }
 
@@ -98,91 +99,122 @@ export function HomeFeedScreen() {
     <div
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="space-y-4 pb-20 select-none text-white"
+      className="space-y-3 pb-20 select-none text-white"
     >
-      {/* Top Header with ambient subtle gradient glow */}
-      <div className="relative overflow-hidden p-3.5 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent border border-white/5 rounded-2xl flex items-center justify-between shadow-sm">
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-1.5">
-            <h1 className="text-xl font-bold tracking-tight text-white">
-              Instempus
-            </h1>
-            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-          </div>
-          <p className="text-xs text-slate-300 font-medium">
-            {currentUser.name} • {currentUser.department.split(' ')[0]}
-          </p>
+      {/* Top Header */}
+      <div className="flex items-center justify-between px-2 py-2 border-b border-[#141414]">
+        <div>
+          <span className="text-base font-bold tracking-tight text-white block">
+            Instempus Campus
+          </span>
+          <span className="text-[10px] text-slate-400">
+            {currentUser.name} • {currentUser.department}
+          </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {/* Emergency Siren Alarm Trigger (Visible to Admin, Security, Warden) */}
           {canTriggerAlarm && (
             <button
               onClick={handleEmergencyTrigger}
-              className="flex items-center gap-1.5 bg-red-950/70 hover:bg-red-900 text-red-300 px-3 py-1.5 rounded-xl text-xs font-bold border border-red-800 transition-all shadow-xs active:scale-95"
+              className="flex items-center gap-1 bg-red-950/60 hover:bg-red-900/80 text-red-300 px-2 py-1 rounded-md text-[10px] font-bold border border-red-800 transition-colors"
               title="Broadcast Emergency Siren to all phones"
             >
-              <AlertTriangle size={13} className="text-red-400 animate-bounce" />
-              <span>SOS</span>
+              <AlertTriangle size={12} className="text-red-400" />
+              <span>SOS Siren</span>
             </button>
           )}
 
-          {/* Quick Create Button with Instagram-like Gradient */}
+          {/* Quick Create Button */}
           <button
             onClick={() => setCreateSceneOpen(true)}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm shadow-indigo-500/20 transition-all active:scale-95"
-            title="Create Group Notice (or swipe right)"
+            className="flex items-center gap-1 bg-[#161616] hover:bg-[#222] text-slate-200 px-2.5 py-1 rounded-md text-xs font-semibold border border-[#2b2b2b] transition-colors"
+            title="Create Group Notice (or swipe left)"
           >
-            <Plus size={15} />
+            <Plus size={13} />
             <span>Create</span>
           </button>
         </div>
       </div>
 
-      {/* Swipe Right Hint Bar (Instagram camera style gesture) */}
-      <div
-        onClick={() => setCreateSceneOpen(true)}
-        className="p-3 bg-gradient-to-r from-indigo-500/10 via-[#101010] to-purple-500/10 border border-indigo-500/20 hover:border-indigo-500/40 rounded-2xl flex items-center justify-between text-xs text-slate-300 shadow-sm cursor-pointer transition-all active:scale-[0.99]"
-      >
-        <div className="flex items-center gap-2">
-          <Sparkles size={14} className="text-indigo-400" />
-          <span>Swipe right to open notice creator</span>
-        </div>
-        <span className="text-indigo-400 font-semibold flex items-center gap-1">
-          Open <ArrowRight size={13} />
-        </span>
+      {/* Swipe left hint bar */}
+      <div className="px-2 py-1.5 bg-[#0a0a0a] border-b border-[#141414] flex items-center justify-between text-[11px] text-slate-400">
+        <span>Slide left to open notice creator</span>
+        <button
+          onClick={() => setCreateSceneOpen(true)}
+          className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-0.5 text-[10px]"
+        >
+          <span>Open</span> <ArrowRight size={10} />
+        </button>
       </div>
 
-      {/* COMPACT CANTEEN DAILY MENU BANNER (Tap to view full meal schedule) */}
-      <CanteenMenuCard />
+      {/* CLASSROOM LIVE ACTIVITY CARD */}
+      <div className="px-2">
+        <div
+          onClick={() => setActiveTab('classroom')}
+          className="p-3 bg-gradient-to-r from-[#111] via-[#141414] to-[#101018] border border-indigo-500/20 hover:border-indigo-500/40 rounded-xl cursor-pointer transition-all shadow-sm flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="h-9 w-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+              <GraduationCap size={18} />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-mono uppercase text-indigo-400 font-bold">
+                  Classroom Hub
+                </span>
+                <span className="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded font-bold">
+                  ● Period 2 Active
+                </span>
+              </div>
+              <h4 className="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors">
+                CS601: Distributed Systems & Cloud
+              </h4>
+              <p className="text-[10px] text-slate-400 font-mono">
+                Hall 301 • Prof. Sneha Mohanty • Roll Call Ready
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 text-[10px] font-mono text-indigo-400 font-bold bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <span>Enter</span>
+            <ArrowRight size={11} />
+          </div>
+        </div>
+      </div>
+
+      {/* CANTEEN DAILY MENU HIGHLIGHT CARD */}
+      <div className="px-2">
+        <CanteenMenuCard />
+      </div>
 
       {/* Stories / Urgent Priority Broadcasts */}
       {urgentNotices.length > 0 && (
-        <div className="bg-[#101010] border border-white/5 rounded-2xl p-3.5 space-y-2.5 shadow-sm">
+        <div className="px-2 py-2 border-b border-[#141414] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Priority Campus Notices
             </span>
-            <span className="text-xs font-mono text-slate-500">OFFICIAL DESK</span>
+            <span className="text-[9px] font-mono text-slate-500">OFFICIAL DESK</span>
           </div>
 
-          <div className="flex gap-3.5 overflow-x-auto no-scrollbar py-1">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar py-1">
             {urgentNotices.map((notice, idx) => (
               <button
                 key={notice.id}
                 onClick={() => openStory(idx)}
-                className="flex flex-col items-center gap-1.5 flex-shrink-0 focus:outline-none group"
+                className="flex flex-col items-center gap-1 flex-shrink-0 focus:outline-none"
               >
-                <div className="p-0.5 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-500 shadow-sm group-hover:scale-105 transition-transform">
+                <div className="p-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-500">
                   <div className="p-0.5 rounded-full bg-black">
                     <img
                       src={notice.authorAvatar}
                       alt={notice.authorName}
-                      className="h-14 w-14 rounded-full object-cover"
+                      className="h-13 w-13 rounded-full object-cover"
                     />
                   </div>
                 </div>
-                <span className="text-xs font-medium text-slate-300 max-w-[68px] truncate text-center group-hover:text-white transition-colors">
+                <span className="text-[10px] text-slate-300 max-w-[64px] truncate text-center">
                   {notice.authorName.split(' ')[0]}
                 </span>
               </button>
@@ -192,29 +224,29 @@ export function HomeFeedScreen() {
       )}
 
       {/* Search Input */}
-      <div>
+      <div className="px-2">
         <div className="relative">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search notices, circulars, or instructors..."
-            className="w-full bg-[#121212] border border-white/10 rounded-2xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 shadow-xs"
+            placeholder="Search group notices, circulars, or instructors..."
+            className="w-full bg-[#111111] border-b border-[#222222] pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
           />
         </div>
       </div>
 
       {/* Tag filter strip */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+      <div className="flex items-center gap-1.5 px-2 overflow-x-auto no-scrollbar py-1">
         {allTags.map((tag) => (
           <button
             key={tag}
             onClick={() => setSelectedTag(tag)}
-            className={`px-3 py-1.5 text-xs whitespace-nowrap rounded-xl transition-all font-medium ${
+            className={`px-2.5 py-1 text-xs whitespace-nowrap rounded-md transition-colors ${
               selectedTag === tag
-                ? 'bg-gradient-to-r from-white to-slate-200 text-black font-bold shadow-xs'
-                : 'bg-[#141414] text-slate-400 hover:text-white border border-white/5'
+                ? 'bg-white text-black font-semibold'
+                : 'bg-[#121212] text-slate-400 hover:text-white'
             }`}
           >
             {tag}
@@ -222,47 +254,44 @@ export function HomeFeedScreen() {
         ))}
       </div>
 
-      {/* Notices Feed List (Rounded Cards with Generous Spacing and Entrance Transitions) */}
-      <div className="space-y-4">
+      {/* Notices Feed List */}
+      <div className="divide-y divide-[#141414]">
         {filteredNotices.length === 0 ? (
-          <div className="py-16 text-center text-sm text-slate-500 bg-[#101010] rounded-2xl border border-white/5">
+          <div className="py-12 text-center text-xs text-slate-500">
             No notices found for this filter.
           </div>
         ) : (
           filteredNotices.map((post) => (
-            <article
-              key={post.id}
-              className="bg-[#101010] border border-white/5 rounded-2xl p-4 space-y-3.5 shadow-sm transition-all duration-200 animate-in fade-in slide-in-from-bottom-2"
-            >
+            <article key={post.id} className="py-3 space-y-2">
               {/* Group Source Tag & Author Bar */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20 text-xs">
+              <div className="px-2 space-y-1">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20">
                     Group: {post.groupName}
                   </span>
-                  <span className="text-slate-400 font-mono text-xs">{post.timestamp}</span>
+                  <span className="text-slate-500 font-mono">{post.timestamp}</span>
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <img
                       src={post.authorAvatar}
                       alt={post.authorName}
-                      className="h-10 w-10 rounded-full object-cover border border-white/10"
+                      className="h-8 w-8 rounded-full object-cover"
                     />
                     <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-bold text-white">{post.authorName}</span>
-                        <span className="text-xs uppercase px-2 py-0.5 rounded-md bg-[#1e1e1e] text-slate-300 font-mono font-medium">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-white">{post.authorName}</span>
+                        <span className="text-[9px] uppercase px-1.5 py-0.2 rounded-sm bg-[#1e1e1e] text-slate-300 font-mono">
                           {post.authorRole}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400">{post.authorTitle}</p>
+                      <p className="text-[10px] text-slate-400">{post.authorTitle}</p>
                     </div>
                   </div>
 
                   {post.isUrgent && (
-                    <span className="text-xs font-bold text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 rounded-full animate-pulse">
+                    <span className="text-[9px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded-sm">
                       URGENT
                     </span>
                   )}
@@ -270,16 +299,16 @@ export function HomeFeedScreen() {
               </div>
 
               {/* Notice Title & Text */}
-              <div className="space-y-1.5">
-                <h3 className="text-base font-bold text-white leading-snug">{post.title}</h3>
-                <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-line">
+              <div className="px-2 space-y-1">
+                <h3 className="text-sm font-bold text-white leading-snug">{post.title}</h3>
+                <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
                   {post.content}
                 </p>
               </div>
 
               {/* Image or Video Player Embed */}
               {post.mediaType === 'video' && post.mediaUrl ? (
-                <div className="w-full bg-black rounded-xl overflow-hidden aspect-video border border-white/5 shadow-xs">
+                <div className="w-full bg-black overflow-hidden aspect-video">
                   <video
                     src={post.mediaUrl}
                     controls
@@ -287,7 +316,7 @@ export function HomeFeedScreen() {
                   />
                 </div>
               ) : post.imageUrl ? (
-                <div className="w-full bg-[#181818] rounded-xl overflow-hidden aspect-[16/9] border border-white/5 shadow-xs">
+                <div className="w-full bg-[#0a0a0a] overflow-hidden aspect-[16/9]">
                   <img
                     src={post.imageUrl}
                     alt={post.title}
@@ -298,42 +327,42 @@ export function HomeFeedScreen() {
 
               {/* Attachments if any */}
               {post.attachments && post.attachments.length > 0 && (
-                <div className="space-y-1.5">
+                <div className="px-2 space-y-1">
                   {post.attachments.map((att, i) => (
                     <div
                       key={i}
-                      className="flex items-center justify-between bg-[#161616] px-3.5 py-2.5 rounded-xl text-xs border border-white/5"
+                      className="flex items-center justify-between bg-[#121212] px-3 py-1.5 text-xs border border-[#222]"
                     >
-                      <div className="flex items-center gap-2 text-slate-200">
-                        <Paperclip size={14} className="text-indigo-400" />
-                        <span className="font-mono text-xs font-medium">{att.name}</span>
+                      <div className="flex items-center gap-1.5 text-slate-200">
+                        <Paperclip size={13} className="text-indigo-400" />
+                        <span className="font-mono text-[11px]">{att.name}</span>
                       </div>
-                      <span className="text-xs font-mono text-slate-400">{att.size}</span>
+                      <span className="text-[10px] font-mono text-slate-400">{att.size}</span>
                     </div>
                   ))}
                 </div>
               )}
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-1.5 pt-0.5">
+              <div className="flex flex-wrap gap-1 px-2 pt-0.5">
                 {post.tags.map((tg) => (
-                  <span key={tg} className="text-xs text-indigo-400 font-medium">
+                  <span key={tg} className="text-[11px] text-indigo-400 font-medium">
                     {tg}
                   </span>
                 ))}
               </div>
 
               {/* Action row */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/5">
+              <div className="flex items-center justify-between px-2 pt-1 border-t border-[#121212]">
                 <button
                   onClick={() => toggleNoticeGotIt(post.id)}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-colors ${
                     post.userGotIt
-                      ? 'bg-gradient-to-r from-emerald-600/30 to-teal-600/30 text-emerald-300 border border-emerald-500/40 shadow-xs'
-                      : 'bg-[#181818] text-slate-300 hover:text-white border border-white/5 active:scale-95'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-[#161616] text-slate-300 hover:text-white'
                   }`}
                 >
-                  <CheckCircle2 size={15} />
+                  <CheckCircle2 size={14} />
                   <span>
                     {post.userGotIt ? 'Acknowledged' : 'Acknowledge'} ({post.gotItCount})
                   </span>
@@ -345,9 +374,9 @@ export function HomeFeedScreen() {
                       navigator.share({ title: post.title, text: post.content });
                     }
                   }}
-                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-[#181818] transition-colors active:scale-95"
+                  className="p-1 text-slate-400 hover:text-white"
                 >
-                  <Share2 size={16} />
+                  <Share2 size={15} />
                 </button>
               </div>
             </article>

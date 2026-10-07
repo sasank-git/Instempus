@@ -12,6 +12,7 @@ export function AccountSettingsSheet({
 }) {
   const {
     currentUser,
+    currentRole,
     logout,
     language,
     setLanguage,
@@ -31,68 +32,68 @@ export function AccountSettingsSheet({
       title="Institutional Account Settings"
       subtitle={`Authenticated as ${currentUser.name}`}
     >
-      <div className="space-y-5 pt-2 text-sm select-none text-white">
+      <div className="space-y-4 pt-2 text-xs select-none text-white">
         {/* User Details Matrix (No Bios, Institutional Identity) */}
         <div className="space-y-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block px-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
             Official Identity Record
           </span>
 
-          <div className="bg-[#121212] border border-white/5 rounded-2xl divide-y divide-white/5 shadow-sm overflow-hidden">
-            <div className="p-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 text-slate-400">
-                <User size={16} className="text-indigo-400" />
-                <span className="text-xs font-medium">Full Name</span>
+          <div className="bg-[#121212] divide-y divide-[#1e1e1e] border-b border-[#222]">
+            <div className="p-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-400">
+                <User size={14} className="text-indigo-400" />
+                <span>Full Name</span>
               </div>
-              <span className="font-semibold text-white text-xs">{currentUser.name}</span>
+              <span className="font-semibold text-white">{currentUser.name}</span>
             </div>
 
-            <div className="p-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 text-slate-400">
-                <Shield size={16} className="text-indigo-400" />
-                <span className="text-xs font-medium">Institutional Identifier</span>
+            <div className="p-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Shield size={14} className="text-indigo-400" />
+                <span>Institutional Identifier</span>
               </div>
-              <span className="font-mono font-bold text-white text-xs">
+              <span className="font-mono font-bold text-white">
                 {currentUser.rollNo || currentUser.employeeId}
               </span>
             </div>
 
-            <div className="p-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 text-slate-400">
-                <Building size={16} className="text-indigo-400" />
-                <span className="text-xs font-medium">Department / Cell</span>
+            <div className="p-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Building size={14} className="text-indigo-400" />
+                <span>Department / Cell</span>
               </div>
-              <span className="font-medium text-slate-200 text-xs text-right max-w-[200px] truncate">
+              <span className="font-medium text-slate-200 text-right max-w-[200px] truncate">
                 {currentUser.department}
               </span>
             </div>
 
             {currentUser.hostelBlock && (
-              <div className="p-3.5 flex items-center justify-between">
-                <div className="flex items-center gap-2.5 text-slate-400">
-                  <MapPin size={16} className="text-indigo-400" />
-                  <span className="text-xs font-medium">Campus Residence</span>
+              <div className="p-2.5 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-slate-400">
+                  <MapPin size={14} className="text-indigo-400" />
+                  <span>Campus Residence</span>
                 </div>
-                <span className="font-medium text-slate-200 text-xs">
+                <span className="font-medium text-slate-200">
                   {currentUser.hostelBlock} ({currentUser.roomNo})
                 </span>
               </div>
             )}
 
-            <div className="p-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 text-slate-400">
-                <Phone size={16} className="text-indigo-400" />
-                <span className="text-xs font-medium">Registered Contact</span>
+            <div className="p-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Phone size={14} className="text-indigo-400" />
+                <span>Registered Contact</span>
               </div>
-              <span className="font-mono text-slate-300 text-xs">{currentUser.phone}</span>
+              <span className="font-mono text-slate-300">{currentUser.phone}</span>
             </div>
 
-            <div className="p-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 text-slate-400">
-                <Mail size={16} className="text-indigo-400" />
-                <span className="text-xs font-medium">Official Email</span>
+            <div className="p-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Mail size={14} className="text-indigo-400" />
+                <span>Official Email</span>
               </div>
-              <span className="font-mono text-indigo-300 text-xs text-right max-w-[200px] truncate">
+              <span className="font-mono text-indigo-300 text-right max-w-[200px] truncate">
                 {currentUser.email || `${currentUser.username}@bput.ac.in`}
               </span>
             </div>
@@ -100,11 +101,11 @@ export function AccountSettingsSheet({
         </div>
 
         {/* System Language Preference */}
-        <div className="space-y-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block px-1">
+        <div className="space-y-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
             System Language
           </span>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
             {[
               { id: 'en', label: 'English' },
               { id: 'hi', label: 'Hindi' },
@@ -113,10 +114,10 @@ export function AccountSettingsSheet({
               <button
                 key={l.id}
                 onClick={() => setLanguage(l.id as Language)}
-                className={`py-2 text-center text-xs rounded-xl font-semibold transition-colors ${
+                className={`py-1.5 text-center text-xs rounded-md transition-colors ${
                   language === l.id
-                    ? 'bg-white text-black font-bold shadow-xs'
-                    : 'bg-[#141414] text-slate-400 hover:text-white border border-white/5'
+                    ? 'bg-white text-black font-bold'
+                    : 'bg-[#141414] text-slate-400 hover:text-white'
                 }`}
               >
                 {l.label}
@@ -126,14 +127,14 @@ export function AccountSettingsSheet({
         </div>
 
         {/* Offline Cache Simulator */}
-        <div className="bg-[#121212] p-4 flex items-center justify-between border border-white/5 rounded-2xl shadow-sm">
+        <div className="bg-[#121212] p-2.5 flex items-center justify-between border-b border-[#222]">
           <div>
-            <span className="font-semibold text-white text-sm block">Offline Persistence Mode</span>
-            <span className="text-xs text-slate-400">IndexedDB local storage simulation</span>
+            <span className="font-semibold text-white block">Offline Persistence Mode</span>
+            <span className="text-[10px] text-slate-400">IndexedDB local storage simulation</span>
           </div>
           <button
             onClick={toggleOffline}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+            className={`px-3 py-1 rounded-md text-xs font-semibold ${
               isOffline ? 'bg-rose-600 text-white' : 'bg-[#1e1e1e] text-slate-300'
             }`}
           >
@@ -145,12 +146,12 @@ export function AccountSettingsSheet({
         <div className="pt-2">
           <button
             onClick={handleLogout}
-            className="w-full py-3 rounded-xl bg-red-600/90 hover:bg-red-600 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-colors active:scale-95"
+            className="w-full py-2.5 rounded-md bg-red-600/90 hover:bg-red-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow transition-colors active:scale-95"
           >
-            <LogOut size={16} />
+            <LogOut size={15} />
             <span>Log Out of Instempus</span>
           </button>
-          <span className="text-xs text-slate-500 font-mono text-center block mt-2">
+          <span className="text-[10px] text-slate-500 font-mono text-center block mt-1.5">
             Terminates active session and returns to Institutional Login Screen.
           </span>
         </div>

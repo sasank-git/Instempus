@@ -1,154 +1,163 @@
 # Instempus
 
-Instempus is a role-aware college campus operations platform built to streamline communication, approvals, and issue resolution across academic and hostel workflows.
+Instempus is a mobile-first campus operations platform designed to replace scattered campus processes like paper registers, WhatsApp groups, notice boards, gate-pass booklets, and manual approvals with a single role-aware system.
 
-It brings together notice management, gate-pass and hostel operations, grievance tracking, messaging, and AI-assisted support into a single campus experience.
+Built for college/admin workflows, the app brings attendance, leave, gate passes, notices, complaints, payments, canteen interactions, messaging, and audit tracking into one place.
 
-## Overview
+## Why Instempus
 
-Instempus is designed for BPUT-affiliated colleges and helps different campus stakeholders work from a shared system:
+Manual campus administration often leads to:
 
-- Students can access notices, gate pass workflows, and hostel services
-- Faculty mentors can review academic and duty-related cases
-- Wardens and administrators can manage hostel rules, curfew checks, and escalations
-- Support teams can track maintenance and campus issues from a single board
+- delayed approvals
+- lost or duplicate records
+- fake gate passes and informal approvals
+- poor visibility across roles
+- no audit trail for decisions and actions
+
+Instempus centralizes these flows behind a role-aware application model so every action can be tracked, approved, and reviewed.
 
 ## Core features
 
-- Smart gate-pass and QR verification flows
-- Verified notices feed for campus updates
-- Hostel and campus issue board
-- Direct messaging between users and teams
-- Role-based dashboards for different stakeholders
-- AI-powered campus assistant for common rules and operational queries
-- Responsive Android-style UI for mobile-first usage
+- Role-based campus workflows for students, teachers, HODs, wardens, canteen staff, accounts, security, admin, and principal
+- Unified approval system driven by a generic application model
+- Notice feed and campus communication hub
+- Messaging and contact-based communication between users and departments
+- Complaint and issue management
+- Leave and gate-pass requests
+- Attendance and operational tracking
+- Canteen and service workflows
+- Security and emergency handling views
+- Profile management and user context
+- Audit-friendly record flow for approvals and status changes
 
 ## Tech stack
 
-- React + TypeScript + Vite
-- Express server for API routes
-- Google Gemini API for AI chat assistance
-- Supabase integration support
-- Capacitor for mobile wrapper support
-- Tailwind CSS for styling
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- Supabase (database/auth/storage/realtime)
+- Zustand for state management
+- Google Gemini AI integration via `@google/genai`
+- Capacitor-ready app shell for mobile packaging
 
 ## Project structure
 
 ```text
 .
+├── docs/                  # Architecture, planning, and project documentation
 ├── src/
-│   ├── components/
-│   │   ├── admin/
-│   │   ├── ai/
-│   │   ├── android/
-│   │   ├── auth/
-│   │   ├── canteen/
-│   │   ├── emergency/
-│   │   ├── home/
-│   │   ├── issues/
-│   │   ├── messaging/
-│   │   ├── profile/
-│   │   ├── security/
-│   │   ├── services/
-│   │   └── story/
-│   ├── i18n/
-│   ├── services/
-│   ├── types/
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── index.css
-├── server.ts
-├── vite.config.ts
-├── capacitor.config.ts
-├── package.json
-├── .env.example
-├── index.html
-├── metadata.json
-├── README.md
-└── tsconfig.json
+│   ├── components/        # Feature modules: home, auth, profile, security, issues, messaging, etc.
+│   ├── services/          # Supabase and app services
+│   ├── i18n/              # Localization files
+│   ├── types/             # Type definitions
+│   ├── App.tsx            # App entry component
+│   ├── main.tsx           # React bootstrap
+│   └── index.css          # Global styles
+├── supabase/
+│   └── migrations/        # Database migrations
+├── .env.example           # Example environment variables
+├── capacitor.config.ts    # Capacitor configuration
+├── index.html             # Vite app entry
+├── package.json           # Scripts and dependencies
+├── tsconfig.json          # TypeScript config
+├── vite.config.ts         # Vite config
+├── README.md              # Project overview
+└── bun.lock               # Bun lockfile
 ```
 
-## Environment setup
+## Getting started
 
-Create a local environment file from the provided example:
+### Prerequisites
 
-```bash
-cp .env.example .env.local
-```
+- Node.js 18+
+- npm or Bun
 
-Then configure the required variables:
-
-```env
-GEMINI_API_KEY="your_gemini_api_key"
-APP_URL="your_app_url"
-```
-
-The server expects `GEMINI_API_KEY` for the `/api/chat` AI endpoint.
-
-## Run locally
-
-Install dependencies:
+### 1) Install dependencies
 
 ```bash
 npm install
 ```
 
-Start the development server:
+or
+
+```bash
+bun install
+```
+
+### 2) Configure environment variables
+
+Copy the example env file and add your project values:
+
+```bash
+cp .env.example .env
+```
+
+The project expects:
+
+- `GEMINI_API_KEY` for Gemini AI functionality
+- `APP_URL` for app URL usage (for local/dev or deployed hosting)
+
+### 3) Run the app locally
 
 ```bash
 npm run dev
 ```
 
-This runs the Express server and Vite dev middleware together.
+The app is configured to run on port `3000`.
 
-## Production build
+### 4) Build for production
 
 ```bash
 npm run build
-npm run start
+```
+
+### 5) Run linting
+
+```bash
+npm run lint
 ```
 
 ## Available scripts
 
-```bash
-npm run dev      # start app in development mode
-npm run build    # build frontend assets
-npm run start    # start Express server
-npm run preview  # preview production build
-npm run lint     # TypeScript validation
-```
-
-## API
-
-The app exposes a Gemini-backed chat endpoint:
-
-```http
-POST /api/chat
-```
-
-Request body:
-
 ```json
 {
-  "messages": [
-    { "role": "user", "content": "What are the hostel curfew rules?" }
-  ],
-  "systemInstruction": "Optional custom system instruction"
+  "dev": "vite --port=3000 --host=0.0.0.0",
+  "build": "vite build",
+  "preview": "vite preview",
+  "clean": "rm -rf dist server.js",
+  "lint": "tsc --noEmit"
 }
 ```
 
-Example response:
+## Supabase setup
 
-```json
-{
-  "reply": "The hostel curfew is 20:30 hours..."
-}
-```
+The app is designed to work with Supabase for data and auth. Database schema and migrations are placed under `supabase/migrations`.
+
+If you're setting up the backend manually:
+
+1. Create a Supabase project
+2. Add your Supabase URL and keys to the environment used by your app
+3. Apply migrations in `supabase/migrations`
+4. Validate auth and RLS behavior for the campus workflows
 
 ## Notes
 
-This project is intended as a campus operations assistant and mobile-first portal for college stakeholders. It combines operational workflows with AI support to reduce repetitive administrative work and improve communication across campus teams.
+This repository includes a strong documentation set under `docs/` that explains the system architecture, database design, and implementation plan. If you want to understand the intended product and workflow model in detail, start with:
+
+- `docs/PROJECT_CONTEXT.md`
+- `docs/ARCHITECTURE.md`
+- `docs/DATABASE.md`
+- `docs/SYSTEM_DESIGN.md`
 
 ## License
 
-This project is configured with TypeScript and uses standard project-level setup files. Check the repository for usage and deployment details relevant to your environment.
+This project is configured for standard project usage and does not currently declare an explicit repository license in the main files reviewed here.
+
+## Contributing
+
+Contributions are welcome. For best results, keep changes aligned with the established app architecture and use the project’s feature-based component organization.
+
+## Summary
+
+Instempus is a campus operations and approval platform focused on replacing fragmented manual workflows with one clean, digital, role-aware operating system for higher education institutions.

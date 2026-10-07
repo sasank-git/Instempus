@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useAppStore } from '../../services/store';
-import { Utensils, Edit3, ChevronRight, Sparkles, Clock, Check } from 'lucide-react';
+import { Utensils, Edit3, Check, Clock, Star, MessageSquare } from 'lucide-react';
 import { AndroidBottomSheet } from '../android/AndroidBottomSheet';
 
 export function CanteenMenuCard() {
-  const { canteenMenu, updateCanteenMenu, currentRole } = useAppStore();
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const { canteenMenu, updateCanteenMenu, currentRole, setActiveTab, messFeedback } = useAppStore();
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const [breakfast, setBreakfast] = useState(canteenMenu.breakfast);
@@ -32,230 +31,184 @@ export function CanteenMenuCard() {
   };
 
   return (
-    <>
-      {/* 
-        COMPACT CANTEEN HIGHLIGHT CARD:
-        Doesn't take whole home screen space!
-        Tapping it opens full detailed meals view.
-      */}
-      <div
-        onClick={() => setIsDetailsOpen(true)}
-        className="group cursor-pointer bg-gradient-to-r from-amber-500/10 via-[#121212] to-indigo-500/10 border border-amber-500/20 hover:border-amber-500/40 rounded-2xl p-3.5 space-y-2 select-none text-white shadow-sm hover:shadow-md transition-all duration-300 transform active:scale-[0.99]"
-      >
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-black font-bold shadow-sm shadow-amber-500/20 group-hover:scale-105 transition-transform flex-shrink-0">
-              <Utensils size={18} />
-            </div>
-
-            <div className="min-w-0 space-y-0.5">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-bold text-white tracking-tight">
-                  Campus Canteen & Mess
-                </span>
-                <span
-                  className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold ${
-                    canteenMenu.isVegOnly
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                  }`}
-                >
-                  {canteenMenu.isVegOnly ? 'VEG ONLY' : 'TODAY SPECIAL'}
-                </span>
-              </div>
-              <p className="text-xs text-slate-300 truncate">
-                {canteenMenu.specialDish || 'Dalma, Paneer & Rice • Tap for full schedule'}
-              </p>
-            </div>
+    <div className="bg-[#0e0e0e] border-b border-[#1c1c1c] p-3 space-y-2.5 select-none text-white">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-bold uppercase tracking-wider text-white">
+              Campus Canteen and Mess Menu
+            </span>
+            <span
+              className={`text-[9px] font-mono px-1.5 py-0.2 rounded-sm ${
+                canteenMenu.isVegOnly
+                  ? 'bg-emerald-500/20 text-emerald-400'
+                  : 'bg-amber-500/20 text-amber-400'
+              }`}
+            >
+              {canteenMenu.isVegOnly ? 'VEG ONLY TODAY' : 'STANDARD / NON-VEG OPTION'}
+            </span>
           </div>
+          <span className="text-[10px] text-slate-400 font-mono">
+            {canteenMenu.date} • Last updated {canteenMenu.lastUpdated}
+          </span>
+        </div>
 
-          <div className="flex items-center gap-1 text-xs text-amber-400 group-hover:text-amber-300 font-semibold flex-shrink-0">
-            <span>View Menu</span>
-            <ChevronRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+        {canEdit && (
+          <button
+            onClick={() => setIsEditOpen(true)}
+            className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#181818] hover:bg-[#222] text-slate-300 text-xs font-medium border border-[#262626]"
+          >
+            <Edit3 size={12} />
+            <span>Update</span>
+          </button>
+        )}
+      </div>
+
+      {/* Meals Grid */}
+      <div className="grid grid-cols-2 gap-1.5 text-xs">
+        <div className="bg-[#121212] p-2 space-y-0.5">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>Breakfast</span>
+            <span>07:30 - 09:30</span>
           </div>
+          <p className="font-semibold text-slate-200 text-[11px]">{canteenMenu.breakfast}</p>
+        </div>
+
+        <div className="bg-[#121212] p-2 space-y-0.5">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>Lunch</span>
+            <span>12:30 - 14:30</span>
+          </div>
+          <p className="font-semibold text-slate-200 text-[11px]">{canteenMenu.lunch}</p>
+        </div>
+
+        <div className="bg-[#121212] p-2 space-y-0.5">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>Evening Snacks</span>
+            <span>17:00 - 18:00</span>
+          </div>
+          <p className="font-semibold text-slate-200 text-[11px]">{canteenMenu.snacks}</p>
+        </div>
+
+        <div className="bg-[#121212] p-2 space-y-0.5">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>Dinner</span>
+            <span>20:00 - 22:00</span>
+          </div>
+          <p className="font-semibold text-slate-200 text-[11px]">{canteenMenu.dinner}</p>
         </div>
       </div>
 
-      {/* FULL CANTEEN SCHEDULE BOTTOM SHEET */}
-      <AndroidBottomSheet
-        isOpen={isDetailsOpen}
-        onClose={() => setIsDetailsOpen(false)}
-        title="Campus Canteen and Mess Menu"
-        subtitle={`${canteenMenu.date} • Dining Hall Mess 2`}
-      >
-        <div className="space-y-4 pt-1 select-none text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-xs font-mono px-2.5 py-1 rounded-full font-semibold ${
-                  canteenMenu.isVegOnly
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                }`}
-              >
-                {canteenMenu.isVegOnly ? 'VEG ONLY TODAY' : 'STANDARD / NON-VEG'}
-              </span>
-              <span className="text-xs text-slate-400 font-mono">
-                Updated {canteenMenu.lastUpdated}
-              </span>
-            </div>
-
-            {canEdit && (
-              <button
-                onClick={() => {
-                  setIsDetailsOpen(false);
-                  setIsEditOpen(true);
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#181818] hover:bg-[#242424] text-slate-200 text-xs font-semibold border border-white/10 transition-colors shadow-xs"
-              >
-                <Edit3 size={13} />
-                <span>Edit Menu</span>
-              </button>
-            )}
+      {canteenMenu.specialDish && (
+        <div className="p-2 bg-[#121212] border-l-2 border-amber-500 text-[11px] flex justify-between items-center">
+          <div>
+            <span className="text-[10px] text-amber-400 font-mono uppercase block">
+              Today's Dining Special:
+            </span>
+            <span className="font-semibold text-white">{canteenMenu.specialDish}</span>
           </div>
-
-          {canteenMenu.specialDish && (
-            <div className="p-3.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 rounded-2xl flex items-center justify-between">
-              <div>
-                <span className="text-xs text-amber-400 font-mono font-bold uppercase tracking-wide block">
-                  Today's Chef Special
-                </span>
-                <span className="font-bold text-white text-sm">{canteenMenu.specialDish}</span>
-              </div>
-              <Sparkles size={18} className="text-amber-400 animate-pulse" />
-            </div>
-          )}
-
-          {/* Meals Grid */}
-          <div className="space-y-2.5">
-            <div className="bg-[#141414] border border-white/5 rounded-2xl p-3.5 space-y-1">
-              <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
-                <span className="font-bold text-slate-200 text-sm">Breakfast</span>
-                <span>07:30 - 09:30</span>
-              </div>
-              <p className="font-medium text-slate-300 text-sm leading-relaxed">{canteenMenu.breakfast}</p>
-            </div>
-
-            <div className="bg-[#141414] border border-white/5 rounded-2xl p-3.5 space-y-1">
-              <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
-                <span className="font-bold text-slate-200 text-sm">Lunch</span>
-                <span>12:30 - 14:30</span>
-              </div>
-              <p className="font-medium text-slate-300 text-sm leading-relaxed">{canteenMenu.lunch}</p>
-            </div>
-
-            <div className="bg-[#141414] border border-white/5 rounded-2xl p-3.5 space-y-1">
-              <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
-                <span className="font-bold text-slate-200 text-sm">Evening Snacks</span>
-                <span>17:00 - 18:00</span>
-              </div>
-              <p className="font-medium text-slate-300 text-sm leading-relaxed">{canteenMenu.snacks}</p>
-            </div>
-
-            <div className="bg-[#141414] border border-white/5 rounded-2xl p-3.5 space-y-1">
-              <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
-                <span className="font-bold text-slate-200 text-sm">Dinner</span>
-                <span>20:00 - 22:00</span>
-              </div>
-              <p className="font-medium text-slate-300 text-sm leading-relaxed">{canteenMenu.dinner}</p>
-            </div>
-          </div>
+          <span className="text-[10px] text-slate-400 font-mono">Dining Hall Mess 2</span>
         </div>
-      </AndroidBottomSheet>
+      )}
 
-      {/* UPDATE MENU BOTTOM SHEET (For Canteen Manager / Staff) */}
+      {/* Link to Dining Feedback & Rating in Hostel Desk */}
+      <div className="pt-1 flex items-center justify-between text-[10px] font-mono border-t border-[#1a1a1a]">
+        <div className="flex items-center gap-1 text-amber-400">
+          <Star size={11} className="fill-amber-400" />
+          <span className="font-bold">4.4 / 5.0 Rating</span>
+          <span className="text-slate-500">({messFeedback.length} Reviews)</span>
+        </div>
+        <button
+          onClick={() => setActiveTab('issues')}
+          className="text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-0.5"
+        >
+          <span>Rate Meal & Feedback →</span>
+        </button>
+      </div>
+
+      {/* UPDATE MENU BOTTOM SHEET */}
       <AndroidBottomSheet
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        title="Update Canteen & Mess Schedule"
+        title="Update Canteen and Mess Menu"
         subtitle="Changes reflect instantly on all student feeds"
       >
-        <form onSubmit={handleSave} className="space-y-4 pt-2 text-sm">
+        <form onSubmit={handleSave} className="space-y-3 pt-2 text-xs">
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-              Breakfast (07:30 - 09:30)
-            </label>
+            <label className="text-slate-400 block mb-0.5">Breakfast (07:30 - 09:30)</label>
             <input
               type="text"
               required
               value={breakfast}
               onChange={(e) => setBreakfast(e.target.value)}
-              className="w-full bg-[#161616] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-400"
+              className="w-full bg-[#141414] border-b border-[#2b2b2b] px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-400"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-              Lunch (12:30 - 14:30)
-            </label>
+            <label className="text-slate-400 block mb-0.5">Lunch (12:30 - 14:30)</label>
             <input
               type="text"
               required
               value={lunch}
               onChange={(e) => setLunch(e.target.value)}
-              className="w-full bg-[#161616] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-400"
+              className="w-full bg-[#141414] border-b border-[#2b2b2b] px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-400"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-              Evening Snacks (17:00 - 18:00)
-            </label>
+            <label className="text-slate-400 block mb-0.5">Evening Snacks (17:00 - 18:00)</label>
             <input
               type="text"
               required
               value={snacks}
               onChange={(e) => setSnacks(e.target.value)}
-              className="w-full bg-[#161616] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-400"
+              className="w-full bg-[#141414] border-b border-[#2b2b2b] px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-400"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-              Dinner (20:00 - 22:00)
-            </label>
+            <label className="text-slate-400 block mb-0.5">Dinner (20:00 - 22:00)</label>
             <input
               type="text"
               required
               value={dinner}
               onChange={(e) => setDinner(e.target.value)}
-              className="w-full bg-[#161616] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-400"
+              className="w-full bg-[#141414] border-b border-[#2b2b2b] px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-400"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-              Special Dish (Optional)
-            </label>
+            <label className="text-slate-400 block mb-0.5">Special Dish (Optional)</label>
             <input
               type="text"
               value={specialDish}
               onChange={(e) => setSpecialDish(e.target.value)}
-              className="w-full bg-[#161616] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-400"
+              className="w-full bg-[#141414] border-b border-[#2b2b2b] px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-400"
             />
           </div>
 
-          <div className="flex items-center gap-2.5 pt-1">
+          <div className="flex items-center gap-2 pt-1">
             <input
               type="checkbox"
               id="vegCheck"
               checked={isVegOnly}
               onChange={(e) => setIsVegOnly(e.target.checked)}
-              className="h-4 w-4 rounded-md bg-slate-800 text-indigo-600 focus:ring-0"
+              className="h-4 w-4 bg-slate-800 text-indigo-600 focus:ring-0"
             />
-            <label htmlFor="vegCheck" className="text-sm font-medium text-slate-200">
+            <label htmlFor="vegCheck" className="text-slate-300">
               Strictly Vegetarian Menu Today
             </label>
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md mt-2 transition-colors"
+            className="w-full py-2.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow mt-2"
           >
             Publish Daily Menu
           </button>
         </form>
       </AndroidBottomSheet>
-    </>
+    </div>
   );
 }

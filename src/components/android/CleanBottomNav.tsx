@@ -1,6 +1,7 @@
 import { useAppStore } from '../../services/store';
 import {
   Home,
+  GraduationCap,
   MessageSquare,
   Layers,
   AlertCircle,
@@ -13,7 +14,7 @@ export function CleanBottomNav() {
   const totalUnreadMessages = threads.reduce((acc, t) => acc + t.unreadCount, 0);
 
   return (
-    <div className="bg-[#0a0a0a] border-t border-[#1a1a1a] px-4 py-2.5 z-30 select-none">
+    <div className="bg-[#0a0a0a] border-t border-[#1a1a1a] px-3 py-2.5 z-30 select-none">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {/* 1. Home Icon */}
         <button
@@ -22,19 +23,31 @@ export function CleanBottomNav() {
           aria-label="Home Feed"
         >
           <Home
-            size={22}
+            size={21}
             className={activeTab === 'home' ? 'text-white stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'}
           />
         </button>
 
-        {/* 2. Messages Icon (Right beside Home) */}
+        {/* 2. Classroom Icon */}
+        <button
+          onClick={() => setActiveTab('classroom')}
+          className="p-1.5 transition-transform active:scale-90 focus:outline-none"
+          aria-label="Classroom"
+        >
+          <GraduationCap
+            size={22}
+            className={activeTab === 'classroom' ? 'text-indigo-400 stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'}
+          />
+        </button>
+
+        {/* 3. Messages Icon */}
         <button
           onClick={() => setActiveTab('messages')}
           className="p-1.5 relative transition-transform active:scale-90 focus:outline-none"
           aria-label="Messages"
         >
           <MessageSquare
-            size={22}
+            size={21}
             className={activeTab === 'messages' ? 'text-white stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'}
           />
           {totalUnreadMessages > 0 && (
@@ -42,7 +55,7 @@ export function CleanBottomNav() {
           )}
         </button>
 
-        {/* 3. Services Icon (Replaced QR icon with Layers / Services) */}
+        {/* 4. Services Icon */}
         <button
           onClick={() => setActiveTab('services')}
           className="p-1.5 transition-transform active:scale-90 focus:outline-none"
@@ -50,30 +63,30 @@ export function CleanBottomNav() {
         >
           {currentRole === 'security' ? (
             <ShieldCheck
-              size={22}
+              size={21}
               className={activeTab === 'services' ? 'text-emerald-400 stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'}
             />
           ) : (
             <Layers
-              size={22}
+              size={21}
               className={activeTab === 'services' ? 'text-white stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'}
             />
           )}
         </button>
 
-        {/* 4. Issues Icon */}
+        {/* 5. Report Issues & Hostel Operations Icon */}
         <button
           onClick={() => setActiveTab('issues')}
           className="p-1.5 transition-transform active:scale-90 focus:outline-none"
-          aria-label="Campus Issues"
+          aria-label="Report Issues & Facilities"
         >
           <AlertCircle
-            size={22}
+            size={21}
             className={activeTab === 'issues' ? 'text-white stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'}
           />
         </button>
 
-        {/* 5. Profile Icon (User Avatar) */}
+        {/* 6. Profile Icon (User Avatar) */}
         <button
           onClick={() => setActiveTab('profile')}
           className="p-1 transition-transform active:scale-90 focus:outline-none"
@@ -89,7 +102,7 @@ export function CleanBottomNav() {
             <img
               src={currentUser.avatarUrl}
               alt={currentUser.name}
-              className="h-6 w-6 rounded-full object-cover"
+              className="h-5.5 w-5.5 rounded-full object-cover"
             />
           </div>
         </button>
